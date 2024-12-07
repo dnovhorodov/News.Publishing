@@ -1,0 +1,6 @@
+﻿@HostAddress = http://localhost:5267
+@VideoId = new-video-for-post-1
+
+GET {{HostAddress}}/api/videos/{{VideoId}}
+Content-Type: application/json
+User-Agent: rider-ide

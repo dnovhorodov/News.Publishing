@@ -1,0 +1,21 @@
+﻿@HostAddress = http://localhost:5267
+@PublicationId = war-article-only
+
+POST {{HostAddress}}/api/publications
+Content-Type: application/json
+User-Agent: rider-ide
+
+{
+  "publicationId": "{{PublicationId}}",
+  "title": "The Impact of Modern Warfare on Global Stability",
+  "synopsis": "This article examines the profound impact of modern warfare on global stability, focusing on recent conflicts and their effects on geopolitical alliances, civilian populations, and international security. We explore how technological advancements have changed the nature of warfare, the humanitarian crises resulting from prolonged conflicts, and the urgent need for diplomatic solutions to foster peace.",
+  "articles": [
+    {
+      "articleId": "6fd85f64-5717-4562-b3fc-2c963f66dda9",
+      "title": "The Human Cost of Modern Warfare",
+      "text": "Modern warfare has evolved significantly with the advent of advanced technologies, but the human cost remains immense. This article delves into the consequences of recent conflicts, highlighting the displacement of millions of people, the destruction of critical infrastructure, and the long-lasting psychological trauma experienced by affected populations. It also discusses potential pathways towards de-escalation and peace-building efforts that could help mitigate these issues in the future.",
+      "createdAt": "2024-10-04T11:00:00.000Z"
+    }
+  ],
+  "createdAt": "2024-10-04T10:55:58.990Z"
+}

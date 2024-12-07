@@ -1,0 +1,43 @@
+﻿@HostAddress = http://localhost:5267
+@PublicationId = funny-pub
+
+POST {{HostAddress}}/api/publications
+Content-Type: application/json
+User-Agent: rider-ide
+
+{
+  "publicationId": "{{PublicationId}}",
+  "title": "The Great Cat Video Showdown",
+  "synopsis": "Who doesn't love a good cat video? This publication dives into the funniest and most adorable cat videos of the year. From playful kittens getting into mischief to sophisticated felines showing off their quirky personalities, this is the ultimate source of entertainment for cat lovers everywhere. Get ready to laugh, awe, and enjoy some good old-fashioned feline fun!",
+  "articles": [
+    {
+      "articleId": "4fb85f64-5717-4562-b3fc-2c963f66bba7",
+      "title": "Top 10 Funniest Cat Videos of 2024",
+      "text": "Cats have taken over the internet, and 2024 was no exception! In this article, we present the top 10 funniest cat videos of the year. Watch as these furry comedians bring a smile to your face, from epic jumps gone wrong to cats chasing laser pointers with hilarious determination. Prepare yourself for a lot of laughter and a little bit of chaos, as only cats can deliver.",
+      "videos": [
+        {
+          "videoId": "funny-cat-video-1",
+          "origin": "S3",
+          "type": "MP4",
+          "createdAt": "2024-09-30T12:30:00.000Z"
+        }
+      ],
+      "createdAt": "2024-10-02T10:00:00.000Z"
+    },
+    {
+      "articleId": "5cc85f64-5717-4562-b3fc-2c963f66cca8",
+      "title": "Cat vs. Cucumber: The Ultimate Prank Compilation",
+      "text": "The classic cat vs. cucumber prank is back! This article compiles the most side-splitting moments of cats coming face-to-face with their unexpected green nemesis. Find out why cucumbers are cats' greatest mystery and watch their priceless reactions as they leap, scamper, and stare in confusion. Whether you're a fan of pranks or just love cats, this compilation is guaranteed to entertain.",
+      "videos": [
+        {
+          "videoId": "cat-cucumber-video",
+          "origin": "Embedded",
+          "type": "MP4",
+          "createdAt": "2024-10-01T14:20:00.000Z"
+        }
+      ],
+      "createdAt": "2024-10-02T11:00:00.000Z"
+    }
+  ],
+  "createdAt": "2024-10-02T09:55:58.990Z"
+}

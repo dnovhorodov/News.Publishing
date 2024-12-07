@@ -1,0 +1,12 @@
+﻿@HostAddress = http://localhost:5267
+@PublicationId = climate-crisis-pub
+@Version = "1"
+
+PUT {{HostAddress}}/api/publications/{{PublicationId}}/publication-requests
+Content-Type: application/json
+If-Match: {{Version}}
+User-Agent: rider-ide
+
+{
+  "Platform": "BBCNews"
+}

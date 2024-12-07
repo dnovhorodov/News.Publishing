@@ -1,0 +1,15 @@
+﻿@HostAddress = http://localhost:5267
+@VideoId = new-video-for-post-1
+
+POST {{HostAddress}}/api/videos
+Content-Type: application/json
+User-Agent: rider-ide
+
+{
+  "publicationId": "climate-crisis-pub",
+  "videoId": "{{VideoId}}",
+  "origin": "S3",
+  "mediaType": "MP4",
+  "url": "s3://amzn-s3-demo-bucket-2",
+  "createdAt": "2024-08-17T09:55:58.990Z"
+}

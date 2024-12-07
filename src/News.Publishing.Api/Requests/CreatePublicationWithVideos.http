@@ -1,0 +1,27 @@
+﻿@HostAddress = http://localhost:5267
+@PublicationId = anime-video-only
+
+POST {{HostAddress}}/api/publications
+Content-Type: application/json
+User-Agent: rider-ide
+
+{
+  "publicationId": "{{PublicationId}}",
+  "title": "The Ultimate Anime Fight Scenes Collection",
+  "synopsis": "Get ready for the most intense and thrilling anime fight scenes ever compiled! This collection features iconic battles from some of the most beloved anime series. From epic sword fights to explosive energy clashes, this compilation is sure to get your adrenaline pumping. Perfect for anime enthusiasts looking to relive some of the greatest moments in anime history!",
+  "videos": [
+    {
+      "videoId": "anime-fight-video-1",
+      "origin": "AzureBlob",
+      "mediaType": "MP4",
+      "createdAt": "2024-10-03T10:00:00.000Z"
+    },
+    {
+      "videoId": "anime-fight-video-2",
+      "origin": "S3",
+      "mediaType": "MP4",
+      "createdAt": "2024-10-03T12:00:00.000Z"
+    }
+  ],
+  "createdAt": "2024-10-03T09:55:58.990Z"
+}

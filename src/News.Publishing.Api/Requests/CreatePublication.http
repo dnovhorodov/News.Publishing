@@ -1,0 +1,30 @@
+﻿@HostAddress = http://localhost:5267
+@PublicationId = climate-crisis-pub
+
+POST {{HostAddress}}/api/publications
+Content-Type: application/json
+User-Agent: rider-ide
+
+{
+  "publicationId": "{{PublicationId}}",
+  "title": "Climate Crisis: Urgent Measures Needed",
+  "synopsis": "The climate crisis is escalating, and the effects are being felt globally. This publication highlights the urgent actions needed from both individuals and governments to combat climate change and protect our environment. We explore actionable steps that can make a difference, such as reducing carbon footprints, supporting clean energy initiatives, and promoting sustainability in all aspects of life.",
+  "articles": [
+    {
+      "articleId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "title": "Global Warming: A Call to Action",
+      "text": "The world is at a critical juncture when it comes to climate change. Scientists warn that without immediate and drastic actions to curb greenhouse gas emissions, the Earth could reach a tipping point from which recovery may be impossible. This article outlines key measures individuals and governments can take to mitigate the effects of climate change, including transitioning to renewable energy sources, reducing waste, and supporting sustainable agriculture. The time to act is now if we are to preserve the planet for future generations.",
+      "videos": [
+        {
+          "videoId": "climate-change-video",
+          "origin": "S3",
+          "mediaType": "AVI",
+          "url": "s3://amzn-s3-demo-bucket-1",
+          "createdAt": "2024-09-27T09:55:58.990Z"
+        }
+      ],
+      "createdAt": "2024-10-01T09:55:58.990Z"
+    }
+  ],
+  "createdAt": "2024-10-01T09:55:58.990Z"
+}

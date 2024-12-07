@@ -1,0 +1,38 @@
+﻿sequenceDiagram
+    actor Editor
+    participant Publication.CMS
+    participant News.Publishing
+    Note over Publication.CMS, News.Publishing: HTTP WebHooks
+    participant Video.Processing
+    participant News.Portal
+    Note over News.Publishing, Video.Processing: RabbitMQ
+    Note over News.Publishing, News.Portal: RabbitMQ
+    Editor->>Publication.CMS: Initiates Publication Creation (with articles, videos, or both)
+    Publication.CMS->>News.Publishing: Create Publication
+    News.Publishing->Video.Processing: Video Uploaded
+    loop For every video in publication
+        News.Publishing-->>Video.Processing: Send video-uploaded event
+    end
+    alt Adding Article or Video to Publication
+        Editor->>Publication.CMS: Adds Article/Video to Publication
+        Publication.CMS->>News.Publishing: Update Publication with New Content
+        News.Publishing->Video.Processing: Video Uploaded
+        loop For every video in publication
+            News.Publishing-->>Video.Processing: Send video-uploaded event
+        end
+    end
+    Video.Processing-->>News.Publishing: Receives video-ingested event
+    alt Was publish request requested AND all videos ingested?
+        News.Publishing-->>News.Portal: Send publication-ready event
+    else Not all videos have been ingested yet OR no publish requested
+        News.Publishing->>News.Publishing: Update Publication/Video State
+    end
+    alt Request publish
+        Editor->>Publication.CMS: Press Publish button
+        Publication.CMS->>News.Publishing: Publication request
+        alt All videos already ingested?
+            News.Publishing-->>News.Portal: Send publication-ready event
+        else Wait for state: * videos ingested AND publish requested 
+            News.Publishing->>News.Publishing: Wait
+        end
+    end
