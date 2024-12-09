@@ -2,7 +2,6 @@
 
 namespace News.Publishing.Features;
 
-public delegate ArticleAddedToPublication LinkArticleDelegate(Publication.Publication current, LinkArticleToPublication command);
 public record LinkArticleToPublication(
     Guid StreamId,
     Article Article,
@@ -11,7 +10,7 @@ public record LinkArticleToPublication(
 
 public static partial class PublicationService
 {
-    public static readonly LinkArticleDelegate LinkArticle = (current, command) =>
+    public static ArticleAddedToPublication LinkArticle(Publication.Publication current, LinkArticleToPublication command)
     {
         if (current is not { Status : PublicationStatus.Pending })
             throw new InvalidOperationException(
@@ -20,5 +19,5 @@ public static partial class PublicationService
         var (streamId, article, now) = command;
 
         return new ArticleAddedToPublication(streamId, article, now);
-    };
+    }
 }

@@ -4,7 +4,6 @@ namespace News.Publishing.Features;
 
 using static VideoEvent;
 
-public delegate VideoCreated CreateVideoDelegate(CreateVideo command);
 public record CreateVideo(
     Guid StreamId,
     string VideoId,
@@ -18,10 +17,10 @@ public record CreateVideo(
 
 public static partial class VideoService
 {
-    public static readonly CreateVideoDelegate Create = command =>
+    public static VideoCreated Create(CreateVideo command)
     {
         var (streamId, videoId, publicationStreamId, publicationId, type, origin, url, createdAt, now) = command;
 
         return new VideoCreated(streamId, videoId, publicationStreamId, publicationId, type, origin, url, createdAt, now);
-    };
+    }
 }

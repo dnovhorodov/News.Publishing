@@ -5,11 +5,9 @@ using static News.Publishing.Publication.PublicationMediaPlatform;
 
 namespace News.Publishing.Features;
 
-public delegate PublishRequested PublishRequestDelegate(Publication.Publication current, PublishRequest command);
-
 public static partial class PublicationService
 {
-    public static readonly PublishRequestDelegate PublishRequest = (current, command) =>
+    public static PublishRequested PublishRequest(Publication.Publication current, PublishRequest command)
     {
         if (current is { Status : PublicationStatus.PublishedAndClosed })
             throw new InvalidOperationException(
@@ -30,5 +28,5 @@ public static partial class PublicationService
                 throw new InvalidOperationException($"Publication for platform `{toPlatform}` in progress"),
             (_, _) => new PublishRequested(streamId, toPlatform, when),
         };
-    };
+    }
 }

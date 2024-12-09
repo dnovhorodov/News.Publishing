@@ -2,9 +2,6 @@
 
 namespace News.Publishing.Features;
 
-public delegate VideoRemovedFromPublication
-    UnlinkVideoDelegate(Publication.Publication current, UnlinkVideoFromPublication command);
-
 public record UnlinkVideoFromPublication(
     Guid StreamId,
     string VideoId,
@@ -13,7 +10,7 @@ public record UnlinkVideoFromPublication(
 
 public static partial class PublicationService
 {
-    public static readonly UnlinkVideoDelegate UnlinkVideo = (current, command) =>
+    public static VideoRemovedFromPublication UnlinkVideo(Publication.Publication current, UnlinkVideoFromPublication command)
     {
         if (current is not { Status : PublicationStatus.Pending })
             throw new InvalidOperationException(
@@ -26,5 +23,5 @@ public static partial class PublicationService
             throw new InvalidOperationException($"The video with id `{videoId}` was not found");
 
         return new VideoRemovedFromPublication(streamId, videoId, now);
-    };
+    }
 }

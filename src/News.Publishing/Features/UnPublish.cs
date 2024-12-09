@@ -5,11 +5,9 @@ using static News.Publishing.Publication.PublicationMediaPlatform;
 
 namespace News.Publishing.Features;
 
-public delegate UnPublished UnPublishDelegate(Publication.Publication current, UnPublish command);
-
 public static partial class PublicationService
 {
-    public static readonly UnPublishDelegate UnPublish = (current, command) =>
+    public static UnPublished UnPublish(Publication.Publication current, UnPublish command)
     {
         var (streamId, platform, when) = command;
 
@@ -28,5 +26,5 @@ public static partial class PublicationService
             _ => throw new InvalidOperationException(
                 $"Publication for platform `{platform}` has invalid status `{lastStatus}`"),
         };
-    };
+    }
 }

@@ -2,8 +2,6 @@
 
 namespace News.Publishing.Features;
 
-public delegate VideoEvent.VideoIngested VideoIngestedDelegate(Video current, IngestVideo command);
-
 public record IngestVideo(
     Guid StreamId,
     string VideoId,
@@ -12,7 +10,7 @@ public record IngestVideo(
 
 public static partial class VideoService
 {
-    public static readonly VideoIngestedDelegate IngestVideo = (current, command) =>
+    public static VideoEvent.VideoIngested IngestVideo(Video current, IngestVideo command)
     {
         if (current is Video.Ingested)
             throw new InvalidOperationException(
@@ -21,5 +19,5 @@ public static partial class VideoService
         var (streamId, videoId, ingestedAt) = command;
 
         return new VideoEvent.VideoIngested(streamId, videoId, ingestedAt);
-    };
+    }
 }

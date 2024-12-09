@@ -2,7 +2,6 @@
 
 namespace News.Publishing.Features;
 
-public delegate ArticleRemovedFromPublication UnlinkArticleDelegate(Publication.Publication current, UnlinkArticleFromPublication command);
 public record UnlinkArticleFromPublication(
     Guid StreamId,
     Guid ArticleId,
@@ -11,7 +10,7 @@ public record UnlinkArticleFromPublication(
 
 public static partial class PublicationService
 {
-    public static readonly UnlinkArticleDelegate UnlinkArticle = (current, command) =>
+    public static ArticleRemovedFromPublication UnlinkArticle(Publication.Publication current, UnlinkArticleFromPublication command)
     {
         if (current is not { Status : PublicationStatus.Pending })
             throw new InvalidOperationException(
@@ -23,5 +22,5 @@ public static partial class PublicationService
             throw new InvalidOperationException($"The article with id `{articleId}` was not found");
 
         return new ArticleRemovedFromPublication(streamId, articleId, now);
-    };
+    }
 }

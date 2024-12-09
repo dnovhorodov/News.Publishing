@@ -7,8 +7,6 @@ using VideoAddedToPublication = News.Publishing.Publication.VideoAddedToPublicat
 
 namespace News.Publishing.Features;
 
-public delegate PublicationCreated CreatePublicationDelegate(CreatePublication command);
-
 public record CreatePublication(
     Guid StreamId,
     string PublicationId,
@@ -23,13 +21,13 @@ public record CreatePublication(
 
 public static partial class PublicationService
 {
-    public static readonly CreatePublicationDelegate Create = command =>
+    public static PublicationCreated Create(CreatePublication command)
     {
         var (streamId, publicationId, title, synopsis, articles, _, videos, createdAt, now) = command;
         var videoIds = videos?.Select(v => v.VideoId).ToList();
 
         return new PublicationCreated(streamId, publicationId, title, synopsis, articles, videoIds, createdAt, now);
-    };
+    }
 
     public static async Task CreatePublication(
         this IDocumentSession session,

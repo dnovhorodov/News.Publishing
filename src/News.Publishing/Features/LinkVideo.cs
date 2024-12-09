@@ -2,7 +2,6 @@
 
 namespace News.Publishing.Features;
 
-public delegate VideoAddedToPublication LinkVideoDelegate(Publication.Publication current, LinkVideoToPublication command);
 public record LinkVideoToPublication(
     Guid StreamId,
     Guid VideoStreamId,
@@ -12,7 +11,7 @@ public record LinkVideoToPublication(
 
 public static partial class PublicationService
 {
-    public static readonly LinkVideoDelegate LinkVideo = (current, command) =>
+    public static VideoAddedToPublication LinkVideo(Publication.Publication current, LinkVideoToPublication command)
     {
         if (current is not { Status : PublicationStatus.Pending })
             throw new InvalidOperationException(
@@ -21,7 +20,7 @@ public static partial class PublicationService
         var (streamId, videoStreamId, videoId, now) = command;
 
         return new VideoAddedToPublication(streamId, videoStreamId, videoId, now);
-    };
+    }
 }
 
 
