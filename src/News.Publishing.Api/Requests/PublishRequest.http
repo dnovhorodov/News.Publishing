@@ -1,6 +1,6 @@
 ﻿@HostAddress = http://localhost:5267
 @PublicationId = climate-crisis-pub
-@Version = "1"
+@Version = "2"
 
 PUT {{HostAddress}}/api/publications/{{PublicationId}}/publication-requests
 Content-Type: application/json

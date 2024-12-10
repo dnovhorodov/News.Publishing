@@ -12,6 +12,7 @@ public static class Configuration
         options.Projections.LiveStreamAggregation<Video>();
         options.Projections.LiveStreamAggregation<Publication.Publication>();
         options.Projections.Add<PublicationDetailsProjection>(ProjectionLifecycle.Inline);
+        options.Projections.Add<PublicationHistoryTransformation>(ProjectionLifecycle.Inline);
         options.Projections.Add<VideoDetailsProjection>(ProjectionLifecycle.Async);
         options.Projections.Add<PublicationVideosProjection>(ProjectionLifecycle.Async);
 

@@ -53,6 +53,7 @@ var app = builder.Build();
 
 var publicationGroup = app.MapGroup("api/publications").WithTags("Publications");
 var videoGroup = app.MapGroup("api/videos").WithTags("Videos");
+var maintenanceGroup = app.MapGroup("api/maintenance").WithTags("Maintenance");
 
 publicationGroup.MapPost("",
     async (
@@ -238,6 +239,21 @@ videoGroup.MapGet("{videoId}",
     }
 );
 
+maintenanceGroup.MapPost("projections/rebuild",
+    async (
+        [FromServices] IDocumentStore documentStore,
+        [FromBody] RebuildProjectionRequest request,
+        CancellationToken ct) =>
+    {
+        if (request.ProjectionName is null)
+            throw new ArgumentNullException(nameof(request.ProjectionName));
+        
+        using var daemon = await documentStore.BuildProjectionDaemonAsync();
+        await daemon.RebuildProjectionAsync(request.ProjectionName, ct);
+        
+        return Results.Accepted();
+    });
+
 // Configure the HTTP request pipeline.
 app
     .UseSwagger()
@@ -281,6 +297,10 @@ public record CreatePublicationRequest(
     List<ArticleRequest>? Articles,
     List<VideoRequest>? Videos,
     DateTimeOffset CreatedAt
+);
+
+public record RebuildProjectionRequest(
+    string? ProjectionName
 );
 
 public record AddArticleToPublicationRequest(ArticleRequest Article);
