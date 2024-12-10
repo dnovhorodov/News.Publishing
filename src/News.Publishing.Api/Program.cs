@@ -1,10 +1,12 @@
 using System.Text.Json.Serialization;
 using Marten;
+using Marten.Exceptions;
 using Marten.Schema.Identity;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
 using News.Publishing.Api.Infrastructure;
 using News.Publishing.Api.Infrastructure.Http;
+using News.Publishing.Api.Infrastructure.Http.Middlewares.ExceptionHandling;
 using News.Publishing.Api.Infrastructure.Marten;
 using News.Publishing.Features;
 using News.Publishing.Publication;
@@ -24,7 +26,15 @@ var appName = "news-publishing";
 builder.Services
     .AddEndpointsApiExplorer()
     .AddSwaggerGen()
-    //.AddDefaultExceptionHandler()
+    .AddDefaultExceptionHandler(
+        (exception, _) => exception switch
+        {
+            ConcurrencyException =>
+                exception.MapToProblemDetails(StatusCodes.Status412PreconditionFailed),
+            ExistingStreamIdCollisionException =>
+                exception.MapToProblemDetails(StatusCodes.Status412PreconditionFailed),
+            _ => null,
+        })
     .ConfigureMassTransit(appName)
     .ConfigureMarten(builder.Configuration);
 
@@ -70,7 +80,7 @@ publicationGroup.MapPost("",
             return Results.Conflict($"Publication with provided id {publicationId} already exists");
         }
 
-        // Map & handle
+        // Map request DTO to domain entities & handle
         var streamId = CombGuidIdGeneration.NewGuid();
         var articles =
             articleRequests?.Select(a =>
@@ -207,7 +217,6 @@ videoGroup.MapPost("",
         CancellationToken ct
     ) =>
     {
-        // Validate
         if (await documentSession.Query<VideoDetails>().AnyAsync(v => v.VideoId == body.VideoId, ct))
             return Results.Conflict($"Video with id {body.VideoId} already exists");
 
@@ -218,7 +227,6 @@ videoGroup.MapPost("",
         if (publication is null)
             return Results.NotFound($"Publication with id {body.PublicationId} not found");
 
-        // Handle
         var streamId = CombGuidIdGeneration.NewGuid();
 
         await documentSession.Add<Video>(streamId, VideoService.Create(
