@@ -114,4 +114,72 @@ public class PublicationTests
 
         updated.Articles.Should().ContainSingle();
     }
+    
+    [Fact]
+    public void ArticleRemovedFromPublication_ShouldRemoveArticle()
+    {
+        var articleId = Faker.Random.Guid();
+        var article = new Article(articleId, Faker.Lorem.Sentence(), Faker.Lorem.Paragraph(), Now);
+        var initialEvent = new PublicationCreated(
+            Faker.Random.Guid(),
+            Faker.Lorem.Word(),
+            Faker.Lorem.Sentence(),
+            Faker.Lorem.Sentence(),
+            [article],
+            Faker.Lorem.Words(1).ToList(),
+            Faker.Date.RecentOffset(),
+            Now
+        );
+        var publication = Create(initialEvent);
+        var removeEvent = new ArticleRemovedFromPublication(publication.Id, article.ArticleId, Now);
+
+        var updated = publication.Apply(removeEvent);
+
+        updated.Articles.Should().BeEmpty();
+        updated.OfKind.Should().Be(PublicationType.Video);
+    }
+    
+    [Fact]
+    public void VideoAddedToPublication_ShouldAddVideoIfNotPresent()
+    {
+        var initialEvent = new PublicationCreated(
+            Faker.Random.Guid(),
+            Faker.Lorem.Word(),
+            Faker.Lorem.Sentence(),
+            Faker.Lorem.Sentence(),
+            [],
+            ["existing-video-id"],
+            Faker.Date.RecentOffset(),
+            Now
+        );
+        var publication = Create(initialEvent);
+        var addEvent = new VideoAddedToPublication(publication.Id, Faker.Random.Guid(), "new-video-id", Now);
+
+        var updated = publication.Apply(addEvent);
+
+        updated.VideoIds.Should().Contain(["existing-video-id", "new-video-id"]);
+        updated.OfKind.Should().Be(PublicationType.Video);
+    }
+    
+    [Fact]
+    public void VideoRemovedFromPublication_ShouldRemoveVideo()
+    {
+        var initialEvent = new PublicationCreated(
+            Faker.Random.Guid(),
+            Faker.Lorem.Word(),
+            Faker.Lorem.Sentence(),
+            Faker.Lorem.Sentence(),
+            [],
+            ["video-id-1", "video-id-2"],
+            Faker.Date.RecentOffset(),
+            Now
+        );
+        var publication = Create(initialEvent);
+        var removeEvent = new VideoRemovedFromPublication(publication.Id, "video-id-1", Now);
+
+        var updated = publication.Apply(removeEvent);
+
+        updated.VideoIds.Should().ContainSingle().Which.Should().Be("video-id-2");
+        updated.OfKind.Should().Be(PublicationType.Video);
+    }
 }
