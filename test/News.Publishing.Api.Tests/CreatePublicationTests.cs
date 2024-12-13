@@ -37,7 +37,6 @@ public class CreatePublicationTests(PublishingTestFixture fixture)
                     response.Articles.Should().BeNullOrEmpty();
                     response.VideoIds.Should().NotBeNullOrEmpty();
                     response.PublicationHistory.Should().BeNullOrEmpty();
-                    response.OfKind.Should().Be(PublicationType.Video);
                 }))
             .And()
             .When(GET, URI(_ => $"/api/videos/{fakeVideoRequest.VideoId}"))
@@ -74,7 +73,6 @@ public class CreatePublicationTests(PublishingTestFixture fixture)
                     response.PublicationId.Should().Be(publicationId);
                     response.Articles.Should().NotBeNullOrEmpty();
                     response.PublicationHistory.Should().BeNullOrEmpty();
-                    response.OfKind.Should().Be(PublicationType.Article);
                 }));
     }
 

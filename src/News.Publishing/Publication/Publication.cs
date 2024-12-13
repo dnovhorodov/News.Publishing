@@ -35,36 +35,43 @@ public record Publication(
             Status = PublicationStatus.Pending, OfKind = EvaluateType(@event.Articles, @event.VideoIds),
         };
 
-    public Publication Apply(ArticleAddedToPublication @event) =>
-        this with
-        {
-            Articles = Articles!.Any(a => a.ArticleId == @event.Article.ArticleId)
-                ? Articles
-                : Articles!.Append(@event.Article).ToList(),
-            OfKind = EvaluateType(this),
-        };
+    public Publication Apply(ArticleAddedToPublication @event)
+    {
+        var updatedArticles = Articles!.Any(a => a.ArticleId == @event.Article.ArticleId)
+            ? Articles
+            : Articles!.Append(@event.Article).ToList();
 
-    public Publication Apply(ArticleRemovedFromPublication @event) =>
-        this with
-        {
-            Articles = Articles!.Where(a => a.ArticleId != @event.ArticleId).ToList(), OfKind = EvaluateType(this),
-        };
+        var updatedType = EvaluateType(updatedArticles, VideoIds);
 
-    public Publication Apply(VideoAddedToPublication @event) =>
-        this with
-        {
-            VideoIds = VideoIds!.Contains(@event.VideoId)
-                ? VideoIds
-                : new HashSet<string>(VideoIds) { @event.VideoId },
-            OfKind = EvaluateType(this),
-        };
+        return this with { Articles = updatedArticles, OfKind = updatedType };
+    }
 
-    public Publication Apply(VideoRemovedFromPublication @event) =>
-        this with
-        {
-            VideoIds = new HashSet<string>(VideoIds!.Where(id => id != @event.VideoId)),
-            OfKind = EvaluateType(this),
-        };
+    public Publication Apply(ArticleRemovedFromPublication @event)
+    {
+        var updatedArticles = Articles!.Where(a => a.ArticleId != @event.ArticleId).ToList();
+        var updatedType = EvaluateType(updatedArticles, VideoIds);
+        
+        return this with { Articles = updatedArticles, OfKind = updatedType };
+    }
+
+    public Publication Apply(VideoAddedToPublication @event)
+    {
+        var updatedVideoIds = VideoIds!.Contains(@event.VideoId)
+            ? VideoIds
+            : new HashSet<string>(VideoIds) { @event.VideoId };
+        
+        var updatedType = EvaluateType(Articles, updatedVideoIds);
+        
+        return this with { VideoIds = updatedVideoIds, OfKind = updatedType };
+    }
+
+    public Publication Apply(VideoRemovedFromPublication @event)
+    {
+        var updatedVideoIds = new HashSet<string>(VideoIds!.Where(id => id != @event.VideoId));
+        var updatedType = EvaluateType(Articles, updatedVideoIds);
+        
+        return this with { VideoIds = updatedVideoIds, OfKind = updatedType };
+    }
 
     public Publication Apply(PublishRequested @event) =>
         this with
@@ -80,38 +87,37 @@ public record Publication(
                 @event.FromPlatform, MediaPlatformPublicationStatus.UnPublishRequested, @event.When),
         };
 
-    public Publication Apply(Published @event) =>
-        this with
-        {
-            Publications = Publications.AppendStatus(
-                @event.ToPlatform, MediaPlatformPublicationStatus.Published, @event.When),
-            Status = EvaluateStatus(this),
-        };
-
-    public Publication Apply(UnPublished @event) =>
-        this with
-        {
-            Publications = Publications.AppendStatus(
-                @event.FromPlatform, MediaPlatformPublicationStatus.UnPublished, @event.When),
-            Status = EvaluateStatus(this),
-        };
-
-    private static PublicationStatus EvaluateStatus(Publication publication)
+    public Publication Apply(Published @event)
     {
-        var allPublished = publication.Publications
+        var updatedPublications = Publications.AppendStatus(
+            @event.ToPlatform, MediaPlatformPublicationStatus.Published, @event.When);
+        var updatedStatus = EvaluateStatus(updatedPublications);
+        
+        return this with { Publications = updatedPublications, Status = updatedStatus };
+    }
+
+    public Publication Apply(UnPublished @event)
+    {
+        var updatedPublications = Publications.AppendStatus(
+            @event.FromPlatform, MediaPlatformPublicationStatus.UnPublished, @event.When);
+        var updatedStatus = EvaluateStatus(updatedPublications);
+        
+        return this with { Publications = updatedPublications, Status = updatedStatus };
+    }
+
+    private static PublicationStatus EvaluateStatus(ImmutableDictionary<MediaPlatform, List<PublicationRecord>> publications)
+    {
+        var allPublished = publications
             .Select(p => p.Value.LastOrDefault()?.Status)
             .All(status => status == MediaPlatformPublicationStatus.Published);
 
         return allPublished ? PublicationStatus.PublishedAndClosed : PublicationStatus.Pending;
     }
 
-    private static PublicationType EvaluateType(Publication publication)
-        => EvaluateType(publication.Articles, publication.VideoIds);
-
-    internal static PublicationType EvaluateType(IReadOnlyList<Article>? articles, IReadOnlyCollection<string>? videos)
-        => (articles, videos) switch
+    internal static PublicationType EvaluateType(IReadOnlyList<Article>? articles, IReadOnlyCollection<string>? videoIds)
+        => (articles, videos: videoIds) switch
         {
-            { articles.Count: > 0 } when videos is { Count: > 0 } || articles.Any(article => article.VideoIds.Count > 0)
+            { articles.Count: > 0 } when videoIds is { Count: > 0 } || articles.Any(article => article.VideoIds.Count > 0)
                 =>
                 PublicationType.Mixed,
             { articles.Count: > 0, videos: null or { Count: 0 } } => PublicationType.Article,

@@ -12,7 +12,6 @@ public record PublicationDetails(
     IEnumerable<Article> Articles,
     IEnumerable<string> VideoIds,
     ImmutableDictionary<MediaPlatform, List<PublicationRecord>> PublicationHistory,
-    PublicationType OfKind,
     DateTimeOffset PublicationCreatedAt,
     DateTimeOffset OperationAt,
     int Version = 1
@@ -28,7 +27,6 @@ public class PublicationDetailsProjection : SingleStreamProjection<PublicationDe
             created.Articles ?? [],
             created.VideoIds ?? [],
             ImmutableDictionary<MediaPlatform, List<PublicationRecord>>.Empty,
-            Publication.EvaluateType(created.Articles, created.VideoIds),
             created.PublicationCreatedAt,
             created.CreatedAt);
 

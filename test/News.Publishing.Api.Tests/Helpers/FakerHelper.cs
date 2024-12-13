@@ -10,7 +10,7 @@ public static class FakerHelpers
             f.Random.Guid(),
             f.Lorem.Sentence(5),
             f.Lorem.Paragraphs(2),
-            f.Date.PastOffset(1)));
+            f.Date.PastOffset()));
 
     internal static readonly Faker<VideoRequest> VideoRequestFaker = new Faker<VideoRequest>().CustomInstantiator(
         f => new VideoRequest(
@@ -18,5 +18,5 @@ public static class FakerHelpers
             f.PickRandom("mp4", "avi", "mkv"),
             f.PickRandom<VideoOrigin>(),
             f.Internet.Url(),
-            f.Date.PastOffset(1)));
+            f.Date.PastOffset()));
 }
