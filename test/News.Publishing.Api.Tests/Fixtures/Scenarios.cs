@@ -78,9 +78,7 @@ public static class Scenarios
         // we got our new stream completely processed
         await fixture.RebuildAsyncProjections();
 
-        var response = await fixture.ApiSpec.Scenario(
-            fixture.ApiSpec.LinkVideo(publicationId, videoId),
-            _ => fixture.ApiSpec.GetVideoDetails(videoId));
+        var response = await fixture.ApiSpec.GetVideoDetails(videoId);
 
         return await response.FromResponse<VideoDetails>();
     }

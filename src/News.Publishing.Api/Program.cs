@@ -15,6 +15,7 @@ using Oakton;
 using static System.DateTimeOffset;
 using static Microsoft.AspNetCore.Http.TypedResults;
 using static News.Publishing.Api.Infrastructure.Http.ETagExtensions;
+using static News.Publishing.Features.PublicationService;
 using static News.Publishing.Publication.MediaPlatformAction;
 using JsonOptions = Microsoft.AspNetCore.Http.Json.JsonOptions;
 
@@ -141,7 +142,7 @@ publicationGroup.MapPost("{publicationId}/articles/",
             body.Article.CreatedAt) { VideoIds = (body.Article.Videos ?? []).Select(v => v.VideoId).ToList(), };
 
         await documentSession.GetAndUpdate<Publication>(publication.Id, ToExpectedVersion(eTag),
-            state => PublicationService.LinkArticle(state,
+            state => LinkArticle(state,
                 new LinkArticleToPublication(publication.Id, article, Now)), ct);
 
         return Ok();
@@ -170,7 +171,7 @@ publicationGroup.MapPut("{publicationId}/videos/",
             return Results.NotFound($"Video with id {body.VideoId} not found");
 
         await documentSession.GetAndUpdate<Publication>(publication.Id, ToExpectedVersion(eTag),
-            state => PublicationService.LinkVideo(state,
+            state => LinkVideo(state,
                 new LinkVideoToPublication(publication.Id, video.Id, body.VideoId, Now)), ct);
 
         return Ok();
@@ -194,7 +195,7 @@ publicationGroup.MapPut("{publicationId}/publication-requests/",
             return Results.NotFound($"Publication with id {publicationId} not found");
 
         await documentSession.GetAndUpdate<Publication>(publication.Id, ToExpectedVersion(eTag),
-            state => PublicationService.PublishRequest(state,
+            state => PublishRequest(state,
                 new PublishRequest(publication.Id, body.Platform, Now)), ct);
 
         return Ok();
@@ -229,9 +230,17 @@ videoGroup.MapPost("",
 
         var streamId = CombGuidIdGeneration.NewGuid();
 
-        await documentSession.Add<Video>(streamId, VideoService.Create(
+        documentSession.Events.StartStream<Video>(streamId, VideoService.Create(
             new CreateVideo(streamId, body.VideoId, publication.Id, body.PublicationId, body.MediaType, body.Origin,
-                body.Url, body.CreatedAt, Now)), ct);
+                body.Url, body.CreatedAt, Now)));
+
+        await documentSession.Events.WriteToAggregate<Publication>(publication.Id, stream =>
+        {
+            stream.AppendOne(LinkVideo(stream.Aggregate,
+                new LinkVideoToPublication(stream.Id, streamId, body.VideoId, Now)));
+        }, ct);
+
+        await documentSession.SaveChangesAsync();
 
         return Created($"/api/videos/{body.VideoId}", body.VideoId);
     }
@@ -255,10 +264,10 @@ maintenanceGroup.MapPost("projections/rebuild",
     {
         if (request.ProjectionName is null)
             throw new ArgumentNullException(nameof(request.ProjectionName));
-        
+
         using var daemon = await documentStore.BuildProjectionDaemonAsync();
         await daemon.RebuildProjectionAsync(request.ProjectionName, ct);
-        
+
         return Results.Accepted();
     });
 

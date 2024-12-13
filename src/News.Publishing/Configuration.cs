@@ -9,6 +9,14 @@ public static class Configuration
 {
     public static StoreOptions ConfigurePublications(this StoreOptions options)
     {
+        options.Schema.For<PublicationDetails>()
+            .Duplicate(x => x.PublicationId)
+            .UniqueIndex(x => x.PublicationId);
+
+        options.Schema.For<VideoDetails>()
+            .Duplicate(x => x.VideoId)
+            .UniqueIndex(x => x.VideoId);
+        
         options.Projections.LiveStreamAggregation<Video>();
         options.Projections.LiveStreamAggregation<Publication.Publication>();
         options.Projections.Add<PublicationDetailsProjection>(ProjectionLifecycle.Inline);
