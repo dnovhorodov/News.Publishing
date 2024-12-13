@@ -84,7 +84,7 @@ public static class Scenarios
     }
 
     public static async Task<PublicationDetails> PublishedRequest(this ApiSpecification<Program> api,
-        MediaPlatform mediaPlatform = MediaPlatform.BbcNews)
+        MediaPlatform mediaPlatform = MediaPlatform.GeekNews)
     {
         var publication = await api.CreatedPublication(ArticleRequestFaker.Generate(1), []);
 
@@ -94,7 +94,7 @@ public static class Scenarios
     }
 
     public static async Task PublishedRequest(this ApiSpecification<Program> api, string publicationId,
-        MediaPlatform mediaPlatform = MediaPlatform.BbcNews) =>
+        MediaPlatform mediaPlatform = MediaPlatform.GeekNews) =>
         await api.PublishRequest(publicationId, mediaPlatform);
 
     private static Task<Result> CreatePublication(

@@ -8,5 +8,5 @@ If-Match: {{Version}}
 User-Agent: rider-ide
 
 {
-  "Platform": "BBCNews"
+  "Platform": "GeekNews"
 }

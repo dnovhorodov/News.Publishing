@@ -3,6 +3,8 @@ using FluentAssertions;
 using News.Publishing.Publication;
 using static System.DateTimeOffset;
 using static News.Publishing.Publication.Publication;
+using static News.Publishing.Publication.PublicationMediaPlatform;
+using static News.Publishing.Publication.MediaPlatform;
 
 namespace News.Publishing.Tests;
 
@@ -181,5 +183,77 @@ public class PublicationTests
 
         updated.VideoIds.Should().ContainSingle().Which.Should().Be("video-id-2");
         updated.OfKind.Should().Be(PublicationType.Video);
+    }
+    
+    [Fact]
+    public void PublishRequested_ShouldAppendPublishRequestedStatus()
+    {
+        var initialEvent = new PublicationCreated(
+            Faker.Random.Guid(),
+            Faker.Lorem.Word(),
+            Faker.Lorem.Sentence(),
+            Faker.Lorem.Sentence(),
+            [],
+            Faker.Lorem.Words(1).ToList(),
+            Faker.Date.RecentOffset(),
+            Now
+        );
+        var publication = Create(initialEvent);
+        var requestedEvent = new PublishRequested(publication.Id, IntrovertTv, Now);
+
+        var updated = publication.Apply(requestedEvent);
+
+        updated.Publications.Should().ContainKey(IntrovertTv);
+        updated.Publications[IntrovertTv].Should().ContainSingle()
+            .Which.Status.Should().Be(MediaPlatformPublicationStatus.PublishRequested);
+    }
+    
+    [Fact]
+    public void Published_ShouldSetStatusToPublishedAndCloseWhenAllPlatformsPublished()
+    {
+        var initialEvent = new PublicationCreated(
+            Faker.Random.Guid(),
+            Faker.Lorem.Word(),
+            Faker.Lorem.Sentence(),
+            Faker.Lorem.Sentence(),
+            [],
+            Faker.Lorem.Words(1).ToList(),
+            Faker.Date.RecentOffset(),
+            Now
+        );
+        var publication = Create(initialEvent);
+        publication.Apply(new PublishRequested(publication.Id, Youtube, Now));
+        var publishedEvent = new Published(publication.Id, Youtube, Now);
+
+        var updated = publication.Apply(publishedEvent);
+
+        updated.Publications[Youtube].Last().Status.Should().Be(MediaPlatformPublicationStatus.Published);
+        updated.Status.Should().Be(PublicationStatus.PublishedAndClosed);
+    }
+    
+    [Fact]
+    public void UnPublished_ShouldRevertToPendingIfNotAllPlatformsArePublished()
+    {
+        var initialEvent = new PublicationCreated(
+            Faker.Random.Guid(),
+            Faker.Lorem.Word(),
+            Faker.Lorem.Sentence(),
+            Faker.Lorem.Sentence(),
+            [],
+            Faker.Lorem.Words(1).ToList(),
+            Faker.Date.RecentOffset(),
+            Now
+        );
+        var publication = Create(initialEvent)
+            .Apply(new PublishRequested(initialEvent.Id, Youtube, Now))
+            .Apply(new Published(initialEvent.Id, Youtube, Now))
+            .Apply(new PublishRequested(initialEvent.Id, GeekNews, Now))
+            .Apply(new Published(initialEvent.Id, IntrovertTv, Now));
+        var unpublishEvent = new UnPublished(publication.Id, Youtube, Now);
+
+        var updated = publication.Apply(unpublishEvent);
+
+        updated.Status.Should().Be(PublicationStatus.Pending);
+        updated.Publications[Youtube].Last().Status.Should().Be(MediaPlatformPublicationStatus.UnPublished);
     }
 }

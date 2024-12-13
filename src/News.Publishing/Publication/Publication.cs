@@ -151,8 +151,8 @@ public enum MediaPlatformPublicationStatus
 
 public enum MediaPlatform
 {
-    BbcNews,
-    Netflix,
+    GeekNews,
+    IntrovertTv,
     Youtube,
 }
 

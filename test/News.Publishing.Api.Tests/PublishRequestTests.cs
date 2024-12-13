@@ -24,8 +24,8 @@ public class PublishRequestTests(PublishingTestFixture fixture)
                 {
                     response.PublicationHistory.Should().NotBeEmpty();
                     response.PublicationHistory.Should()
-                        .ContainSingle(p => p.Key == MediaPlatform.BbcNews);
-                    response.PublicationHistory[MediaPlatform.BbcNews].Should().ContainSingle(h =>
+                        .ContainSingle(p => p.Key == MediaPlatform.GeekNews);
+                    response.PublicationHistory[MediaPlatform.GeekNews].Should().ContainSingle(h =>
                         h.Status == MediaPlatformPublicationStatus.PublishRequested);
                     response.Version.Should().Be(2);
                 }));
