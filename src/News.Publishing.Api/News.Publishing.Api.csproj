@@ -9,12 +9,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MassTransit.RabbitMQ" Version="8.3.3" />
-    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.8" />
-    <PackageReference Include="Marten.CommandLine" Version="7.30.3" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.8.0" />
-    <PackageReference Include="Marten.AspNetCore" Version="7.34.0" />
-    <PackageReference Include="MassTransit" Version="8.3.3" />
+    <PackageReference Include="MassTransit.RabbitMQ" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
+    <PackageReference Include="Marten.CommandLine" />
+    <PackageReference Include="Swashbuckle.AspNetCore" />
+    <PackageReference Include="Marten.AspNetCore" />
+    <PackageReference Include="MassTransit" />
   </ItemGroup>
 
   <ItemGroup>
