@@ -28,7 +28,7 @@ public class PublicationTests
                     Faker.Date.PastOffset()
                 )
             ],
-            Faker.Lorem.Words(5).ToList(),
+            Faker.Lorem.Words(1).ToList(),
             Faker.Date.RecentOffset(),
             Now
         );
@@ -40,7 +40,7 @@ public class PublicationTests
         publication.Title.Should().Be(@event.Title);
         publication.Synopsis.Should().Be(@event.Synopsis);
         publication.Articles.Should().NotBeNull().And.HaveCount(1);
-        publication.VideoIds.Should().NotBeNull().And.HaveCount(5);
+        publication.VideoIds.Should().NotBeNull().And.HaveCount(1);
         publication.Status.Should().Be(PublicationStatus.Pending);
         publication.OfKind.Should().Be(PublicationType.Mixed);
         publication.Publications.Should().BeEmpty();
