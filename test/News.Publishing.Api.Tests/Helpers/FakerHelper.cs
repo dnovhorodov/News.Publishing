@@ -1,4 +1,5 @@
 ﻿using Bogus;
+using News.Publishing.Api.Endpoints;
 using News.Publishing.Videos;
 
 namespace News.Publishing.Api.Tests.Helpers;

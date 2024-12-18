@@ -1,4 +1,5 @@
 ﻿using Bogus;
+using News.Publishing.Api.Endpoints;
 using News.Publishing.Publication;
 using News.Publishing.Videos;
 using Newtonsoft.Json;
@@ -73,9 +74,6 @@ public static class Scenarios
             Faker.Date.PastOffset(1));
 
         await fixture.ApiSpec.CreateVideo(request);
-        // Here I'm going to completely rewind the async projections, then
-        // rebuild from 0 to the very end of the event store so we know
-        // we got our new stream completely processed
         await fixture.RebuildAsyncProjections();
 
         var response = await fixture.ApiSpec.GetVideoDetails(videoId);

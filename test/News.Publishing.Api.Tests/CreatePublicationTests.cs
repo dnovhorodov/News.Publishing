@@ -1,6 +1,7 @@
 ﻿using Bogus;
 using FluentAssertions;
 using Marten;
+using News.Publishing.Api.Endpoints;
 using News.Publishing.Api.Tests.Fixtures;
 using News.Publishing.Publication;
 using Ogooreck.API;
