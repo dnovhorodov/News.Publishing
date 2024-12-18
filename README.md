@@ -6,7 +6,7 @@ The **News.Publishing.Api** is a backend for managing the publishing flow of art
 ![flow](docs/publishing.png)
 
 ## 💻 Technologies Used
-- 🛠️ **.NET 8**
+- 🛠️ **.NET 9**
 - 📡 **[MassTransit](https://masstransit.io/)**: Provides RabbitMQ integration for the event-driven communication between services.
 - 📦 **[Marten](https://github.com/JasperFx/marten)**: Used for event sourcing and data persistence.
 - 🐳 **Docker & Docker Compose**: Used for containerizing the service and running it in different environments.
@@ -14,7 +14,7 @@ The **News.Publishing.Api** is a backend for managing the publishing flow of art
 ## 🚀 Getting Started
 ### 🔧 Prerequisites
 
-- 🛠️ .NET SDK 8.0+ (Available [here](https://dotnet.microsoft.com/download))
+- 🛠️ .NET SDK 9.0+ (Available [here](https://dotnet.microsoft.com/download))
 - 🐳 PostgreSQL 12+ (Available [here](https://www.postgresql.org/download/)) 
 - 🐳 Docker (Available [here](https://docs.docker.com/engine/install/))
 - 🐰 RabbitMQ (Available [here](https://www.rabbitmq.com/docs/download))
