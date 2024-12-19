@@ -42,7 +42,7 @@ The fastest possible way to develop with is to run PostgreSQL and RabbitMQ in a 
    Once the service is running, navigate to `http://localhost:5267/swagger/index.html` to explore the endpoints.
 
 ### 🧪 Testing
-The service includes acceptance and integration tests to validate its functionality.
+The service includes unit and integration tests to validate its functionality.
 
 - 🧷 [FluentAssertions](https://github.com/fluentassertions/fluentassertions): For expressive assertions in unit tests.
 - 📝 [Ogooreck](https://github.com/oskardudycz/Ogooreck): For BDD-style testing and scenario definitions.
