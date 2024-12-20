@@ -175,7 +175,7 @@ public record ArticleRequest(
     DateTimeOffset CreatedAt
 )
 {
-    public IReadOnlyList<VideoRequest>? Videos { get; init; } = [];
+    public IReadOnlyList<VideoRequest>? Videos { get; } = [];
 }
 
 public record VideoRequest(

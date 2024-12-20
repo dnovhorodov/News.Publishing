@@ -23,8 +23,8 @@ public class PublicationTests
             [
                 new(
                     Guid.NewGuid(),
-                    "Article Title",
-                    "Article Text",
+                    Faker.Lorem.Sentence(),
+                    Faker.Lorem.Paragraph(),
                     Faker.Date.PastOffset()
                 )
             ],

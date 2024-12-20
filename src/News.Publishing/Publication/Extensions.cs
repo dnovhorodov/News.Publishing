@@ -6,8 +6,7 @@ public static class PublicationExtensions
 {
     public static ImmutableDictionary<MediaPlatform, List<PublicationRecord>>
         AppendStatus(
-            this ImmutableDictionary<MediaPlatform, List<PublicationRecord>>
-                publications,
+            this ImmutableDictionary<MediaPlatform, List<PublicationRecord>> publications,
             MediaPlatform platform,
             MediaPlatformPublicationStatus status,
             DateTimeOffset when)
