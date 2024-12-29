@@ -12,7 +12,7 @@ namespace News.Publishing.Api.Infrastructure;
 
 public static class Configuration
 {
-    public static IServiceCollection ConfigureMassTransit(this IServiceCollection services, string appName)
+    public static IServiceCollection ConfigureMassTransit(this IServiceCollection services)
     {
         return services.AddMassTransit(bus =>
         {
@@ -64,9 +64,6 @@ public static class Configuration
                 var schemaName = Environment.GetEnvironmentVariable("SchemaName") ?? "Publishing";
                 options.Events.DatabaseSchemaName = schemaName;
                 options.DatabaseSchemaName = schemaName;
-                options.Connection(configuration.GetConnectionString("Publications") ??
-                                   throw new InvalidOperationException());
-
                 options.UseSystemTextJsonForSerialization(EnumStorage.AsString);
 
                 options.Events.TenancyStyle = TenancyStyle.Conjoined;
@@ -76,7 +73,7 @@ public static class Configuration
                 options.Events.MetadataConfig.HeadersEnabled = true;
                 options.Events.MetadataConfig.CausationIdEnabled = true;
                 options.Events.MetadataConfig.CorrelationIdEnabled = true;
-                options.Events.UseIdentityMapForInlineAggregates = true;
+                options.Events.UseIdentityMapForAggregates = true;
                 options.Events.MessageOutbox = new RabbitMqMessageOutbox(provider);
 
                 options.Projections.Errors.SkipApplyErrors = false;
@@ -90,7 +87,9 @@ public static class Configuration
             .OptimizeArtifactWorkflow(TypeLoadMode.Static)
             .ApplyAllDatabaseChangesOnStartup()
             .UseLightweightSessions()
-            .AddAsyncDaemon(DaemonMode.HotCold);
+            .AddAsyncDaemon(DaemonMode.Solo)
+            // Use PostgreSQL data source from the IoC container
+            .UseNpgsqlDataSource();
 
         return services;
     }

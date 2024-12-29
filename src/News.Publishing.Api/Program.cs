@@ -8,7 +8,10 @@ using Oakton;
 using JsonOptions = Microsoft.AspNetCore.Http.Json.JsonOptions;
 
 var builder = WebApplication.CreateBuilder(args);
-var appName = "news-publishing";
+
+// Register the NpgsqlDataSource in the IoC container using
+// connection string named "marten" from IConfiguration
+builder.AddNpgsqlDataSource("marten");
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -24,7 +27,7 @@ builder.Services
                 exception.MapToProblemDetails(StatusCodes.Status412PreconditionFailed),
             _ => null,
         })
-    .ConfigureMassTransit(appName)
+    .ConfigureMassTransit()
     .ConfigureMarten(builder.Configuration);
 
 builder.Services
