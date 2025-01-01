@@ -19,7 +19,9 @@ The **News.Publishing.Api** is a backend for managing the publishing flow of art
 - 🐳 Docker (Available [here](https://docs.docker.com/engine/install/))
 - 🐰 RabbitMQ (Available [here](https://www.rabbitmq.com/docs/download))
 
-The fastest possible way to develop with is to run PostgreSQL and RabbitMQ in a Docker container. Assuming that you have Docker running on your local box, type:
+The fastest possible way to develop with is to just start `News.Publishing.AppHost`project by hitting "F5" thanks to .NET Aspire.
+
+Another possible way is to run PostgreSQL and RabbitMQ in a Docker container. Assuming that you have Docker running on your local box, type:
 `docker compose up -d postgres rabbitmq`
 
 ### ▶️ Running the Service
